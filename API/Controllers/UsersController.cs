@@ -1,13 +1,13 @@
 ﻿using API.Data;
 using API.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers;
 
-[ApiController]
-[Route("api/[controller]")] // esse [controller] usa o nome do controller para criar a rota ("Users")
-public class UsersController : ControllerBase
+[Authorize] // só usuários autorizados podem acessar essa controller
+public class UsersController : BaseApiController
 {
     private readonly DataContext _context; // convenção para nomear variáveis privadas: _nomeDaVariavel
 
@@ -16,6 +16,7 @@ public class UsersController : ControllerBase
         _context = context;
     }
 
+    [AllowAnonymous] // usuários não autorizados podem acessar esse método
     [HttpGet] // api/users
     public async Task<ActionResult<IEnumerable<AppUser>>> GetUsers()
     {
