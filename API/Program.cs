@@ -1,12 +1,5 @@
-using System.Globalization;
-using System.Text;
-using API.Data;
 using API.Extensions;
-using API.Interfaces;
-using API.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
+using API.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +9,7 @@ builder.Services.AddApplicationServices(builder.Configuration); // o addApplicat
 builder.Services.AddIdentityServices(builder.Configuration); // o addIdentityServices serve para adicionar os serviços de autenticação que estão na pasta Extensions
 
 var app = builder.Build();
+app.UseMiddleware<ExceptionMiddleware>(); // o useMiddleware serve para adicionar o middleware que está na pasta Middleware
 
 app.UseHttpsRedirection();
 
