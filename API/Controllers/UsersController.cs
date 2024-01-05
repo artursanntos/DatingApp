@@ -1,33 +1,35 @@
 ﻿using API.Data;
+using API.DTOs;
 using API.Entities;
+using API.Interfaces;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers;
 
 [Authorize] // só usuários autorizados podem acessar essa controller
 public class UsersController : BaseApiController
 {
-    private readonly DataContext _context; // convenção para nomear variáveis privadas: _nomeDaVariavel
-
-    public UsersController(DataContext context)
+    private readonly IUserRepository _userRepository;
+    private readonly IMapper _mapper;
+    public UsersController(IUserRepository userRepository, IMapper mapper)
     {
-        _context = context;
+        _mapper = mapper;
+        _userRepository = userRepository;
     }
 
-    [AllowAnonymous] // usuários não autorizados podem acessar esse método
     [HttpGet] // api/users
-    public async Task<ActionResult<IEnumerable<AppUser>>> GetUsers()
+    public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers()
     {
-        var users = await _context.Users.ToListAsync(); // ToListAsync() é um método assíncrono, por isso o await é necessário
+        var users = await _userRepository.GetMembersAsync();
 
-        return users;
+        return Ok(users);
     }
 
-    [HttpGet("{id}")] // api/users/3
-    public async Task<ActionResult<AppUser>> GetUser(int id)
+    [HttpGet("{username}")] // api/users/3
+    public async Task<ActionResult<MemberDto>> GetUser(string username)
     {
-        return await _context.Users.FindAsync(id); // Find() procura pelo id
+        return await _userRepository.GetMemberAsync(username);
     }
 }
