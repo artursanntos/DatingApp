@@ -22,6 +22,7 @@ export class NavComponent {
             next: _ =>
                 this.router.navigateByUrl('/members'), // This is how we redirect to another page in Angular
         });
+        console.log(this.model);
     }
 
     logout() {

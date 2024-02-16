@@ -1,10 +1,21 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Member } from '../../_models/member';
+import { MembersService } from '../../_services/members.service';
+import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'app-members-list',
-  templateUrl: './members-list.component.html',
-  styleUrl: './members-list.component.css'
+    selector: 'app-members-list',
+    templateUrl: './members-list.component.html',
+    styleUrl: './members-list.component.css'
 })
-export class MembersListComponent {
+export class MembersListComponent implements OnInit {
+
+    members$: Observable<Member[]> | undefined;
+
+    constructor(private memberService : MembersService) { }
+
+    ngOnInit(): void {
+        this.members$ = this.memberService.getMembers();
+    }
 
 }
